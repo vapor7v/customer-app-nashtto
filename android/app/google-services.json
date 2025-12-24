@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "598289084952",
+    "project_id": "nashtoo",
+    "storage_bucket": "nashtoo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598289084952:android:c5136c99c5152df684896d",
+        "android_client_info": {
+          "package_name": "com.officialnaman.nashtto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh-GRF0NM9ZLTq27BkHl_vfpk2wT6fAxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

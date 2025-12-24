@@ -20,6 +20,7 @@ import { GradientButton } from '../components/GradientCard';
 import { Input } from '../components/Input';
 import api from '../services/api';
 import { apiClient } from '../services/apiClient';
+import { getFCMToken } from '../services/helper';
 
 const { width } = Dimensions.get('window');
 
@@ -155,7 +156,12 @@ const AuthScreen = ({ navigation }) => {
 
       // Confirm the OTP code
       const userCredential = await confirm.confirm(formData.otp);
+      const firebaseAuthToken = await userCredential.user.getIdToken();
+      const fcmToken = await getFCMToken();
+
       console.log('[AuthScreen] User signed in:', userCredential.user.uid);
+      console.log('[AuthScreen] User auth token:', firebaseAuthToken);
+      console.log('[AuthScreen] Device FCM token:', fcmToken);
 
       // Set the customer ID for all API calls
       // TODO: Map Firebase UID to backend UUID via user registration API

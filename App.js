@@ -1,3 +1,5 @@
+// Import Firebase app first to ensure initialization
+import '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
