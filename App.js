@@ -21,6 +21,7 @@ import SupportScreen from './src/screens/SupportScreen.jsx';
 import TrackingScreen from './src/screens/TrackingScreen.js';
 import VendorScreen from './src/screens/VendorScreen.jsx';
 import WalletScreen from './src/screens/WalletScreen.jsx';
+import { configureLocationUploader, startLocationUpload } from './src/services';
 import apiClient from './src/services/apiClient';
 
 const Stack = createStackNavigator();
@@ -45,6 +46,10 @@ export default function App() {
     });
     return () => unsubscribe();
   }, []);
+
+  configureLocationUploader({ intervalMs: 30000, collection: 'locations' , userId: auth().currentUser?.uid || 'guest' });
+  startLocationUpload();
+
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
