@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import api from '../services/api';
+import { notificationStorage } from '../services/notificationStorage';
 
 const NotificationsScreen = ({ navigation }) => {
   const [notifications, setNotifications] = useState([]);
@@ -15,15 +15,41 @@ const NotificationsScreen = ({ navigation }) => {
 
   const loadNotifications = async () => {
     try {
-      const response = await api.getNotifications();
-      if (response.success) {
-        setNotifications(response.notifications);
-      }
+      // Use real notification storage instead of mock API
+      const storedNotifications = await notificationStorage.getAll();
+      // Transform to expected format
+      const formatted = storedNotifications.map(n => ({
+        id: n.id,
+        type: n.type?.toLowerCase() || 'order',
+        title: n.title,
+        message: n.body,
+        time: formatTime(n.receivedAt),
+        read: n.read,
+        data: n.data,
+      }));
+      setNotifications(formatted);
     } catch (error) {
       console.error('Failed to load notifications:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format timestamp to relative time
+  const formatTime = (timestamp) => {
+    if (!timestamp) return 'Just now';
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
   };
 
   const onRefresh = async () => {
@@ -33,15 +59,21 @@ const NotificationsScreen = ({ navigation }) => {
   };
 
   const markAsRead = async (notificationId) => {
+    // Update local state
     setNotifications(prev =>
       prev.map(notif =>
         notif.id === notificationId ? { ...notif, read: true } : notif
       )
     );
+    // Persist to storage
+    await notificationStorage.markAsRead(notificationId);
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
+    // Update local state
     setNotifications(prev => prev.map(notif => ({ ...notif, read: true })));
+    // Persist to storage
+    await notificationStorage.markAllAsRead();
   };
 
   const getNotificationIcon = (type) => {

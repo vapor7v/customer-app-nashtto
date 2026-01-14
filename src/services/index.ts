@@ -11,6 +11,22 @@ export { searchService } from './searchService';
 export { trackingService } from './trackingService';
 export { vendorService } from './vendorService';
 
+// Notification services
+export { setNavigationRef, setOrderStateUpdateHandler, setupNotificationHandler } from './notificationHandler';
+export { notificationService } from './notificationService';
+export { notificationStorage } from './notificationStorage';
+export * from './notificationTypes';
+
+// Order state machine (explicit exports to avoid conflict with types.ts)
+export {
+    canCancel, CANCELLABLE_STATES, getNextState,
+    getOrderStateInfo,
+    getProgressPercentage,
+    isTerminalState,
+    isValidTransition, ORDER_STATES, orderReducer, TERMINAL_STATES
+} from './orderStateMachine';
+export type { OrderEvent, OrderStateInfo, TrackedOrder } from './orderStateMachine';
+
 export { configure as configureLocationUploader, getConfig as getLocationUploaderConfig, isRunning as isLocationUploaderRunning, pushLocationOnce, startLocationUpload, stopLocationUpload } from './locationUploader';
 
 // Re-export types
